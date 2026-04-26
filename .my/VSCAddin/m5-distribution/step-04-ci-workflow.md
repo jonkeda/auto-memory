@@ -1,0 +1,93 @@
+# Step 04 — CI workflow
+
+## File: `.github/workflows/vscode-ext.yml`
+
+```yaml
+name: VS Code Extension
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-binaries:
+    strategy:
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows-latest
+            target: win32-x64
+            exe: session-recall.exe
+          - rid: linux-x64
+            os: ubuntu-latest
+            target: linux-x64
+            exe: session-recall
+          - rid: osx-arm64
+            os: macos-latest
+            target: darwin-arm64
+            exe: session-recall
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0.x' }
+      - run: dotnet publish net/AutoMemory.Cli -c Release -r ${{ matrix.rid }} --self-contained -p:PublishSingleFile=true -o net/publish-${{ matrix.rid }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bin-${{ matrix.target }}
+          path: net/publish-${{ matrix.rid }}/${{ matrix.exe }}
+
+  package:
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [win32-x64, linux-x64, darwin-arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/download-artifact@v4
+        with:
+          name: bin-${{ matrix.target }}
+          path: vscode-extension/bin/${{ matrix.target }}
+      - run: chmod +x vscode-extension/bin/${{ matrix.target }}/session-recall || true
+      - run: cd vscode-extension && npm ci && npm run build
+      - run: cd vscode-extension && npx vsce package --target ${{ matrix.target }} --ignoreFile .vscodeignore.${{ matrix.target }} --out dist/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix-${{ matrix.target }}
+          path: vscode-extension/dist/*.vsix
+
+  publish:
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dist/ }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Publish to VS Code Marketplace
+        env: { VSCE_PAT: ${{ secrets.VSCE_PAT }} }
+        run: |
+          for f in dist/vsix-*/*.vsix; do
+            npx -y @vscode/vsce publish --packagePath "$f" --pat "$VSCE_PAT"
+          done
+      - name: Publish to Open VSX
+        env: { OVSX_PAT: ${{ secrets.OVSX_PAT }} }
+        run: |
+          for f in dist/vsix-*/*.vsix; do
+            npx -y ovsx publish "$f" --pat "$OVSX_PAT"
+          done
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/vsix-*/*.vsix
+```
+
+## Done when
+- [ ] Workflow runs on `v*` tag push
+- [ ] All three platform jobs build successfully
+- [ ] Three VSIX artefacts uploaded
+- [ ] Publish job runs only for tag pushes

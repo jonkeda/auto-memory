@@ -1,0 +1,60 @@
+{
+  "name": "auto-memory",
+  "displayName": "Auto Memory",
+  "description": "VS Code extension for auto-memory session recall — surfaces Copilot context from past sessions.",
+  "publisher": "auto-memory",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/auto-memory/auto-memoryNet" },
+  "engines": { "vscode": "^1.90.0" },
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "auto-memory.openDashboard", "title": "Auto Memory: Open Dashboard" },
+      { "command": "auto-memory.installBinary",  "title": "Auto Memory: Install CLI" },
+      { "command": "auto-memory.updateBinary",   "title": "Auto Memory: Update CLI" },
+      { "command": "auto-memory.uninstall",      "title": "Auto Memory: Uninstall" },
+      { "command": "auto-memory.addInstructions","title": "Auto Memory: Add Copilot Instructions" },
+      { "command": "auto-memory.runHealth",      "title": "Auto Memory: Run Health Check" },
+      { "command": "auto-memory.refreshSidebar", "title": "Auto Memory: Refresh Sidebar" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "autoMemory", "title": "Auto Memory", "icon": "$(database)" }
+      ]
+    },
+    "views": {
+      "autoMemory": [
+        { "type": "webview", "id": "autoMemory.sidebar", "name": "Dashboard" }
+      ]
+    },
+    "configuration": {
+      "title": "Auto Memory",
+      "properties": {
+        "autoMemory.binaryPath":    { "type": "string", "default": "", "description": "Override path to session-recall binary" },
+        "autoMemory.pathStrategy":  { "type": "string", "enum": ["userPath","vscodePath","manual"], "default": "userPath" },
+        "autoMemory.autoUpdate":    { "type": "boolean", "default": true },
+        "autoMemory.dbPath":        { "type": "string", "default": "" },
+        "autoMemory.telemetryEnabled": { "type": "boolean", "default": false }
+      }
+    }
+  },
+  "scripts": {
+    "sync-version": "node scripts/sync-version.mjs",
+    "build": "npm run sync-version && node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "lint": "eslint src --ext ts",
+    "package": "npm run sync-version && vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "esbuild": "^0.20.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.0",
+    "@vscode/vsce": "^2.24.0"
+  }
+}

@@ -1,0 +1,20 @@
+# dev / source files
+.vscode/**
+.vscode-test/**
+src/**
+node_modules/**
+out/**.map
+**/*.ts
+**/*.tsbuildinfo
+tsconfig.json
+esbuild.mjs
+.eslintrc.json
+.gitignore
+scripts/**
+test-logs/**
+*.vsix
+.vscodeignore*
+
+# other-platform binaries
+bin/win32-x64/**
+bin/linux-x64/**
