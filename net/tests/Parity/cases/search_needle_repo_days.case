@@ -1,0 +1,7 @@
+# Test case: search command with repo and days filters
+# Search for "needle" in acme/frontend repo within last 30 days
+
+ARGV: search "needle" --repo acme/frontend --days 30
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

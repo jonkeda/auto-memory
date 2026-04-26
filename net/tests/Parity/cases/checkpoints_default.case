@@ -1,0 +1,7 @@
+# Test case: checkpoints command with default text output
+# Lists recent checkpoints with default limit (5)
+
+ARGV: checkpoints
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

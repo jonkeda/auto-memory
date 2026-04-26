@@ -1,0 +1,43 @@
+// BAD SQL SAMPLE - This file should NOT compile if the analyzer is working.
+// This demonstrates that AUTOMEM001 correctly detects SQL injection risks.
+//
+// To verify the analyzer:
+// 1. Uncomment the code below
+// 2. Run: dotnet build net/AutoMemory.sln -c Release
+// 3. Confirm you see AUTOMEM001 errors
+// 4. Re-comment the code before committing
+
+/*
+using Microsoft.Data.Sqlite;
+
+namespace AutoMemory.Tests;
+
+public class BadSqlSample
+{
+    public void DangerousStringInterpolation()
+    {
+        using var conn = new SqliteConnection("Data Source=:memory:");
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        
+        string userInput = "malicious'; DROP TABLE users--";
+        
+        // AUTOMEM001: String interpolation with user input - SQL injection risk!
+        cmd.CommandText = $"SELECT * FROM users WHERE name = '{userInput}'";
+        cmd.ExecuteNonQuery();
+    }
+
+    public void DangerousConcatenation()
+    {
+        using var conn = new SqliteConnection("Data Source=:memory:");
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        
+        string tableName = "users";
+        
+        // AUTOMEM001: String concatenation with variable - SQL injection risk!
+        cmd.CommandText = "SELECT * FROM " + tableName + " WHERE id = 1";
+        cmd.ExecuteNonQuery();
+    }
+}
+*/

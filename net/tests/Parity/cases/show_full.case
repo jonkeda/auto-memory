@@ -1,0 +1,7 @@
+# Test case: show command with --full flag
+# Returns full turn content without truncation (maxLength=99999 vs 500)
+
+ARGV: show abcd0000 --full
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

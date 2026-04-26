@@ -1,0 +1,7 @@
+# Test case: checkpoints command with JSON output
+# Expected to return 0 and emit valid JSON with checkpoint list
+
+ARGV: checkpoints --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

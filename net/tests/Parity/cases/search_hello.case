@@ -1,0 +1,7 @@
+# Test case: search command with basic query
+# Search for "hello" across all repos
+
+ARGV: search hello --repo all
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

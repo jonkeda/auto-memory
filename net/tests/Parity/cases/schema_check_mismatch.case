@@ -1,0 +1,9 @@
+# Test case: schema-check with mismatch fixture (text output)
+# Tests schema drift detection with missing column
+# Exit code 2 indicates schema mismatch
+
+ARGV: schema-check
+EXIT: 2
+TIER: 1
+DB: fixture-mismatch.sqlite
+STDERR_REGEX: Schema drift

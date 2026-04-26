@@ -1,0 +1,212 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: net/global.json
+      
+      - name: Publish
+        run: |
+          dotnet publish net/src/AutoMemory.Cli/AutoMemory.Cli.csproj \
+            -c Release \
+            -r linux-x64 \
+            -p:PublishSingleFile=true \
+            --self-contained \
+            -o publish/linux-x64
+      
+      - name: Strip binary
+        run: strip publish/linux-x64/session-recall
+      
+      - name: Rename binary
+        run: mv publish/linux-x64/session-recall publish/session-recall-linux-x64
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: session-recall-linux-x64
+          path: publish/session-recall-linux-x64
+          if-no-files-found: error
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: net/global.json
+      
+      - name: Publish
+        run: |
+          dotnet publish net/src/AutoMemory.Cli/AutoMemory.Cli.csproj `
+            -c Release `
+            -r win-x64 `
+            -p:PublishSingleFile=true `
+            --self-contained `
+            -o publish/win-x64
+      
+      - name: Rename binary
+        run: Move-Item publish/win-x64/session-recall.exe publish/session-recall-win-x64.exe
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: session-recall-win-x64
+          path: publish/session-recall-win-x64.exe
+          if-no-files-found: error
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: net/global.json
+      
+      - name: Publish
+        run: |
+          dotnet publish net/src/AutoMemory.Cli/AutoMemory.Cli.csproj \
+            -c Release \
+            -r osx-arm64 \
+            -p:PublishSingleFile=true \
+            --self-contained \
+            -o publish/osx-arm64
+      
+      - name: Rename binary
+        run: mv publish/osx-arm64/session-recall publish/session-recall-osx-arm64
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: session-recall-osx-arm64
+          path: publish/session-recall-osx-arm64
+          if-no-files-found: error
+
+  smoke-test:
+    needs: [build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: session-recall-linux-x64
+          path: bin
+      
+      - name: Make binary executable
+        run: chmod +x bin/session-recall-linux-x64
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      
+      - name: Run .NET version
+        run: bin/session-recall-linux-x64 list --limit 5 --json > dotnet-output.json
+        env:
+          SESSION_RECALL_DB: ${{ github.workspace }}/tests/fixtures/session-store.db
+      
+      - name: Run Python version
+        run: python -m session_recall list --limit 5 --json > python-output.json
+        env:
+          SESSION_RECALL_DB: ${{ github.workspace }}/tests/fixtures/session-store.db
+      
+      - name: Display outputs
+        if: always()
+        run: |
+          echo "=== .NET Output ==="
+          cat dotnet-output.json
+          echo ""
+          echo "=== Python Output ==="
+          cat python-output.json
+      
+      - name: Compare outputs semantically
+        run: |
+          python3 << 'EOF'
+          import json
+          import sys
+          
+          with open('dotnet-output.json') as f:
+              dotnet_data = json.load(f)
+          
+          with open('python-output.json') as f:
+              python_data = json.load(f)
+          
+          if dotnet_data != python_data:
+              print("ERROR: Output mismatch between Python and .NET implementations")
+              print("\n.NET output:")
+              print(json.dumps(dotnet_data, indent=2))
+              print("\nPython output:")
+              print(json.dumps(python_data, indent=2))
+              sys.exit(1)
+          
+          print("✓ Smoke test passed: outputs match semantically")
+          EOF
+
+  create-release:
+    needs: [build-linux, build-windows, build-macos, smoke-test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Display structure
+        run: ls -R artifacts
+      
+      - name: Move artifacts to root
+        run: |
+          mv artifacts/session-recall-linux-x64/session-recall-linux-x64 .
+          mv artifacts/session-recall-win-x64/session-recall-win-x64.exe .
+          mv artifacts/session-recall-osx-arm64/session-recall-osx-arm64 .
+      
+      - name: Compute checksums
+        run: |
+          sha256sum session-recall-linux-x64 session-recall-win-x64.exe session-recall-osx-arm64 > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      
+      - name: Create release notes
+        run: |
+          echo "## SHA-256 Checksums" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "| File | SHA-256 |" >> RELEASE_NOTES.md
+          echo "|------|---------|" >> RELEASE_NOTES.md
+          while IFS= read -r line; do
+            hash=$(echo "$line" | awk '{print $1}')
+            file=$(echo "$line" | awk '{print $2}')
+            echo "| \`$file\` | \`$hash\` |" >> RELEASE_NOTES.md
+          done < SHA256SUMS.txt
+          cat RELEASE_NOTES.md
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            session-recall-linux-x64
+            session-recall-win-x64.exe
+            session-recall-osx-arm64
+            SHA256SUMS.txt
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

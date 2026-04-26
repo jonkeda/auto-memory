@@ -1,0 +1,9 @@
+# Test case: schema-check with mismatch fixture (JSON output)
+# Tests JSON shape parity for schema drift case
+# Exit code 2 indicates schema mismatch
+
+ARGV: schema-check --json
+EXIT: 2
+TIER: 1
+DB: fixture-mismatch.sqlite
+STDERR_REGEX: ^$

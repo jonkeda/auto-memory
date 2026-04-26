@@ -1,0 +1,7 @@
+# Test case: files command with days and limit filters
+# Lists files touched in last 7 days, limited to 5 results
+
+ARGV: files --days 7 --limit 5
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

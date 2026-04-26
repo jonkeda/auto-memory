@@ -1,0 +1,7 @@
+# Test case: show command with unique prefix (≥4 chars)
+# Matches session by prefix and returns full details
+
+ARGV: show abcd000
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

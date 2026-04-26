@@ -1,0 +1,7 @@
+# Test case: schema-check with OK fixture (text output)
+# Validates DB schema and reports success
+
+ARGV: schema-check
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

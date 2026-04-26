@@ -1,0 +1,7 @@
+# Test case: schema-check with OK fixture (JSON output)
+# Canonical parity gate for schema-check command
+
+ARGV: schema-check --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

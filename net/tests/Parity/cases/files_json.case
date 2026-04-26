@@ -1,0 +1,7 @@
+# Test case: files command with JSON output
+# Expected to return 0 and emit valid JSON with file list
+
+ARGV: files --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

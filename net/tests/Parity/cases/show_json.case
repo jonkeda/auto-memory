@@ -1,0 +1,7 @@
+# Test case: show command with --json flag
+# Explicitly requests JSON output (same as default for show)
+
+ARGV: show abcd0000 --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

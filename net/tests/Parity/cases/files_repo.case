@@ -1,0 +1,7 @@
+# Test case: files command filtered by repository
+# Lists files only from acme/frontend repo
+
+ARGV: files --repo acme/frontend
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

@@ -73,6 +73,27 @@ Desktop.ini
 .project
 .settings/
 
+# === .NET / Visual Studio ===
+net/bin/
+net/obj/
+net/publish/
+net/publish-*/
+net/**/*.user
+net/**/*.suo
+net/**/*.userosscache
+net/**/*.sln.docstates
+net/.vs/
+net/src/**/bin/
+net/src/**/obj/
+net/tests/**/bin/
+net/tests/**/obj/
+net/*.nupkg
+net/*.snupkg
+net/TestResults/
+net/**/.vs/
+net/bench-fixture.db
+net/hyperfine-results.md
+
 # === Project-specific ===
 .session-recall-stats.json
 uv.lock
@@ -80,6 +101,7 @@ uv.lock
 # === Logs & Temp ===
 *.log
 logs/
+test-logs/
 tmp/
 temp/
 *.bak

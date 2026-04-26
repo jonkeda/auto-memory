@@ -1,0 +1,71 @@
+using System;
+using System.Globalization;
+using Microsoft.Data.Sqlite;
+
+namespace AutoMemory.Core.Queries;
+
+/// <summary>
+/// Parameterized SQL queries for session file data.
+/// </summary>
+public static class FileQueries
+{
+    private const string BaseQuery = """
+        SELECT sf.file_path, sf.tool_name, sf.first_seen_at,
+               sf.session_id, s.summary FROM session_files sf
+               JOIN sessions s ON s.id = sf.session_id
+        """;
+
+    /// <summary>
+    /// Build command for selecting recently touched files, optionally filtered by repository and days.
+    /// </summary>
+    /// <param name="connection">Open SQLite connection.</param>
+    /// <param name="repo">Repository name or null for all repositories.</param>
+    /// <param name="limit">Maximum number of files to return.</param>
+    /// <param name="days">Number of days to look back (positive value), or null for no date filter.</param>
+    /// <returns>Configured SqliteCommand ready to execute.</returns>
+    public static SqliteCommand SelectRecentFiles(
+        SqliteConnection connection,
+        string? repo,
+        int limit,
+        int? days)
+    {
+        var cmd = connection.CreateCommand();
+        var hasRepo = !string.IsNullOrEmpty(repo) && repo != "all";
+        var hasDays = days.HasValue;
+
+        // Build WHERE clause
+        string whereClause;
+        if (hasRepo && hasDays)
+        {
+            whereClause = " WHERE s.repository = @repo AND sf.first_seen_at >= datetime('now', @days_arg)";
+        }
+        else if (hasRepo)
+        {
+            whereClause = " WHERE s.repository = @repo";
+        }
+        else if (hasDays)
+        {
+            whereClause = " WHERE sf.first_seen_at >= datetime('now', @days_arg)";
+        }
+        else
+        {
+            whereClause = "";
+        }
+
+        cmd.CommandText = BaseQuery + whereClause + " ORDER BY sf.first_seen_at DESC LIMIT @limit";
+
+        // Add parameters
+        if (hasRepo)
+        {
+            cmd.Parameters.AddWithValue("@repo", repo!);
+        }
+        if (hasDays)
+        {
+            var daysArg = $"-{days!.Value.ToString(CultureInfo.InvariantCulture)} days";
+            cmd.Parameters.AddWithValue("@days_arg", daysArg);
+        }
+        cmd.Parameters.AddWithValue("@limit", limit);
+
+        return cmd;
+    }
+}

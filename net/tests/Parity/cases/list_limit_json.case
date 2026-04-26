@@ -1,0 +1,9 @@
+# Test case: list command with limit and JSON
+# Using hash for large output
+
+ARGV: list --limit 5 --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$
+# STDOUT_HASH will be computed from actual output - placeholder for now
+# STDOUT_HASH: <sha256>

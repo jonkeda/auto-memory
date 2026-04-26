@@ -1,0 +1,7 @@
+# Test case: list command filtered by repository
+# Using acme/frontend which exists in the fixture
+
+ARGV: list --repo acme/frontend --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

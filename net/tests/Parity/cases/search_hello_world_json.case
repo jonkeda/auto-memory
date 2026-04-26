@@ -1,0 +1,7 @@
+# Test case: search command with multi-word query and JSON output
+# Search for "hello world" phrase with JSON output
+
+ARGV: search "hello world" --repo all --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

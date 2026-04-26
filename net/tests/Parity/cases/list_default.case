@@ -1,0 +1,7 @@
+# Test case: list command with default text output
+# Lists all sessions in the fixture DB
+
+ARGV: list
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

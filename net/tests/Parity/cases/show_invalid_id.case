@@ -1,0 +1,7 @@
+# Test case: show command with invalid session ID (non-hex chars)
+# Should return exit code 2 with validation error
+
+ARGV: show zzzz9999
+EXIT: 2
+TIER: 1
+STDERR_REGEX: ^error: invalid session id 'zzzz9999' \(expected hex, 4\+ chars\)\s*$

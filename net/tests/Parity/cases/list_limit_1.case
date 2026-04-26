@@ -1,0 +1,7 @@
+# Test case: list command with limit of 1
+# Should return only the most recent session
+
+ARGV: list --limit 1 --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

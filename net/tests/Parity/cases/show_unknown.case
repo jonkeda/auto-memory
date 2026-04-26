@@ -1,0 +1,7 @@
+# Test case: show command with unknown but valid hex ID
+# Should return exit code 1 with "No session found" message
+
+ARGV: show ffff9999
+EXIT: 1
+TIER: 1
+STDERR_REGEX: ^No session found matching 'ffff9999'\s*$

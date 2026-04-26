@@ -1,0 +1,7 @@
+# Test case: list command filtered by days
+# Only sessions within last 7 days from BASE_DATE
+
+ARGV: list --days 7 --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

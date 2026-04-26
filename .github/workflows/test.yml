@@ -29,3 +29,39 @@ jobs:
 
       - name: Run tests
         run: pytest src/ -q
+
+  dotnet:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: net/global.json
+      - name: Verify version parity
+        shell: pwsh
+        run: ./net/tests/verify_version_parity.ps1
+      - run: dotnet build net/AutoMemory.sln -c Release
+      - run: dotnet test  net/AutoMemory.sln -c Release --no-build
+
+  parity:
+    needs: [test, dotnet]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: net/global.json
+      - name: Install Python package
+        run: pip install -e .
+      - name: Publish .NET CLI
+        run: dotnet publish net/src/AutoMemory.Cli -c Release -r linux-x64
+      - name: Seed fixture database
+        run: python net/tests/Parity/seed.py /tmp/fixture.sqlite
+      - name: Run parity tests
+        run: dotnet test net/tests/AutoMemory.Tests --filter Category=Parity -c Release

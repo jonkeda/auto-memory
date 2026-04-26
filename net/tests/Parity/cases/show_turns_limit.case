@@ -1,0 +1,7 @@
+# Test case: show command with --turns limit
+# Returns only specified number of turns
+
+ARGV: show abcd0000 --turns 2
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

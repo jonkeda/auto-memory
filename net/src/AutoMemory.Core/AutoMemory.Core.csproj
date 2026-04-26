@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Version.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>AutoMemory.Core</PackageId>
+    <Description>Embeddable session recall for .NET tools that query GitHub Copilot CLI history.</Description>
+    <Authors>auto-memory contributors</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/dezgit2025/auto-memory</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dezgit2025/auto-memory.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>copilot;session;recall;memory;cli;sqlite</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="AutoMemory.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7">
+      <!-- Exclude native bundles - we'll add them explicitly below -->
+      <ExcludeAssets Condition="'$(UseEncryptedSqlite)' == 'true'">build,buildTransitive</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- SQLite bundle: default (standard) or encrypted (opt-in) -->
+  <ItemGroup Condition="'$(UseEncryptedSqlite)' != 'true'">
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseEncryptedSqlite)' == 'true'">
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
+  </ItemGroup>
+
+  <!-- Analyzer support: include as analyzer and pack into NuGet -->
+  <ItemGroup>
+    <ProjectReference Include="..\AutoMemory.Analyzers\AutoMemory.Analyzers.csproj" 
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="Analyzer" 
+                      PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- Pack the analyzer into the NuGet package so consumers inherit it -->
+    <None Include="..\AutoMemory.Analyzers\bin\$(Configuration)\netstandard2.0\AutoMemory.Analyzers.dll" 
+          Pack="true" 
+          PackagePath="analyzers/dotnet/cs" 
+          Visible="false" />
+  </ItemGroup>
+
+</Project>

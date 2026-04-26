@@ -51,7 +51,15 @@ The file should now exist. If not, start and complete one full Copilot CLI sessi
 
 ## Install
 
-### Step 1 — Clone or navigate to the repo
+You can install auto-memory using either:
+- **Python/pip** (default) — requires Python 3.10+
+- **.NET binary** — standalone executable, no Python or .NET runtime required
+
+Choose one method below.
+
+### Option A — Python/pip Install (Default)
+
+#### Step 1 — Clone or navigate to the repo
 
 If the repo is not already local, clone it:
 
@@ -62,7 +70,7 @@ cd auto-memory
 
 If already local, `cd` into the repo root.
 
-### Step 2 — Install the CLI
+#### Step 2 — Install the CLI
 
 Run the first command that succeeds. Stop after one succeeds.
 
@@ -77,7 +85,7 @@ pipx install --force -e .
 python3 -m pip install --user --force-reinstall -e .
 ```
 
-### Step 3 — Verify install
+#### Step 3 — Verify install
 
 Run both commands. Both must succeed.
 
@@ -87,6 +95,51 @@ session-recall schema-check
 ```
 
 If `which session-recall` returns nothing, see Troubleshooting below.
+
+### Option B — .NET Binary Install
+
+Download and install the self-contained binary for your platform. No Python or .NET runtime required.
+
+#### Linux (x64)
+
+```bash
+curl -L -o /usr/local/bin/session-recall \
+  https://github.com/dezgit2025/auto-memory/releases/latest/download/session-recall-linux-x64
+chmod +x /usr/local/bin/session-recall
+session-recall health
+```
+
+#### Windows (x64)
+
+Download the binary and add it to your PATH:
+
+```powershell
+# Download to a permanent location
+$installDir = "$env:LOCALAPPDATA\session-recall"
+New-Item -ItemType Directory -Force -Path $installDir | Out-Null
+Invoke-WebRequest -Uri "https://github.com/dezgit2025/auto-memory/releases/latest/download/session-recall-win-x64.exe" `
+  -OutFile "$installDir\session-recall.exe"
+
+# Add to user PATH (persists across sessions)
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($userPath -notlike "*$installDir*") {
+    [Environment]::SetEnvironmentVariable("Path", "$userPath;$installDir", "User")
+}
+
+# Verify (restart shell if PATH not updated)
+session-recall health
+```
+
+#### macOS (ARM64)
+
+```bash
+curl -L -o /usr/local/bin/session-recall \
+  https://github.com/dezgit2025/auto-memory/releases/latest/download/session-recall-osx-arm64
+chmod +x /usr/local/bin/session-recall
+session-recall health
+```
+
+> **Note:** The .NET binary is self-contained and includes all dependencies. It is larger (~25 MB) but requires no additional toolchain.
 
 ## Agent Integration — Add to Copilot Instructions
 

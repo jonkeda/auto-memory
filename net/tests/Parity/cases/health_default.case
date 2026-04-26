@@ -1,0 +1,7 @@
+# Test case: health command with default text output
+# Runs all 9 health dimensions and shows text table
+
+ARGV: health
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

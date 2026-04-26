@@ -1,0 +1,9 @@
+# Test case: list command against empty database
+# Should return empty list with exit code 0
+# Note: This requires a separate empty fixture DB or dynamic test setup
+
+ARGV: list --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$
+FIXTURE: empty

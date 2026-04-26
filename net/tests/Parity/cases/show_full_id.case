@@ -1,0 +1,7 @@
+# Test case: show command with full session ID
+# Returns complete session details in JSON format
+
+ARGV: show abcd0000
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

@@ -1,0 +1,7 @@
+# Test case: show command with negative --turns value
+# Should return exit code 2 with usage error
+
+ARGV: show abcd0000 --turns -1
+EXIT: 2
+TIER: 1
+STDERR_REGEX: .*error: argument --turns:.*-1

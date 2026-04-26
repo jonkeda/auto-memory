@@ -1,0 +1,7 @@
+# Test case: health command with JSON output
+# Canonical parity gate for health command
+
+ARGV: health --json
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

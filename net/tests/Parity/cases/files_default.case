@@ -1,0 +1,7 @@
+# Test case: files command with default text output
+# Lists recently touched files with default limit (10)
+
+ARGV: files
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$

@@ -1,0 +1,7 @@
+# Test case: checkpoints command with limit and days filter
+# Lists up to 3 checkpoints created in last 14 days
+
+ARGV: checkpoints --limit 3 --days 14
+EXIT: 0
+TIER: 1
+STDERR_REGEX: ^$
