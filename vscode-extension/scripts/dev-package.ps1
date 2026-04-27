@@ -25,6 +25,10 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
 Write-Host "==> Copying binary to bin/$target/ ..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Path $binDst -Force | Out-Null
 Copy-Item (Join-Path $publishDir $exeName) (Join-Path $binDst $exeName) -Force
+# Copy native dependencies (e.g. e_sqlite3.dll) that PublishSingleFile does not embed
+Get-ChildItem $publishDir -Filter *.dll | ForEach-Object {
+    Copy-Item $_.FullName (Join-Path $binDst $_.Name) -Force
+}
 
 Write-Host "==> Syncing version from Version.props ..." -ForegroundColor Cyan
 Push-Location $extRoot

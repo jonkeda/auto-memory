@@ -1,0 +1,8 @@
+{"type":"session.start","data":{"sessionId":"abc12345-0001-0000-0000-000000000000","version":1,"producer":"copilot-agent","copilotVersion":"0.46.x","vscodeVersion":"1.118.x","startTime":"2026-04-20T10:00:00.000Z"},"id":"event-001","timestamp":"2026-04-20T10:00:00.000Z","parentId":null}
+{"type":"user.message","data":{"content":"How do I add a NuGet package?","attachments":[]},"id":"event-002","timestamp":"2026-04-20T10:00:05.000Z","parentId":"event-001"}
+{"type":"assistant.turn_start","data":{"turnId":"0"},"id":"event-003","timestamp":"2026-04-20T10:00:05.001Z","parentId":"event-002"}
+{"type":"tool.execution_start","data":{"toolCallId":"tc-001","toolName":"semantic_search","arguments":{"query":"NuGet"}},"id":"event-004","timestamp":"2026-04-20T10:00:06.000Z","parentId":"event-003"}
+{"type":"tool.execution_complete","data":{"toolCallId":"tc-001","success":true},"id":"event-005","timestamp":"2026-04-20T10:00:06.500Z","parentId":"event-004"}
+{"type":"assistant.message","data":{"messageId":"msg-001","content":"Use `dotnet add package`.","toolRequests":[],"reasoningText":""},"id":"event-006","timestamp":"2026-04-20T10:00:08.000Z","parentId":"event-005"}
+{"type":"assistant.turn_end","data":{"turnId":"0"},"id":"event-007","timestamp":"2026-04-20T10:00:08.001Z","parentId":"event-006"}
+{"type":"user.message","data":{"content":"What about removing one?","attachments":[]},"id":"event-008","timestamp":"2026-04-20T10:01:00.000Z","parentId":"event-007"}

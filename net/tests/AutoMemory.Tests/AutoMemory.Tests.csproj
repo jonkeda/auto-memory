@@ -27,4 +27,15 @@
     <Compile Include="..\Parity\Runner.cs" Link="Parity\Runner.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\fixtures\session-state\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>fixtures\session-state\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+    <Content Include="..\fixtures\chat-transcripts\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>fixtures\chat-transcripts\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>

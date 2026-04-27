@@ -16,6 +16,15 @@ export async function installBinary(mgr: BinaryManager): Promise<void> {
   await fs.copyFile(src, dst);
   if (process.platform !== 'win32') await fs.chmod(dst, 0o755);
 
+  // Copy native dependencies (e.g. e_sqlite3.dll) that live next to the bundled exe
+  const srcDir = path.dirname(src);
+  const dstDir = path.dirname(dst);
+  for (const entry of await fs.readdir(srcDir)) {
+    if (entry === path.basename(src)) continue;
+    if (!/\.(dll|so|dylib)$/i.test(entry)) continue;
+    await fs.copyFile(path.join(srcDir, entry), path.join(dstDir, entry));
+  }
+
   const strategy = vscode.workspace.getConfiguration('autoMemory')
     .get<'userPath'|'vscodePath'|'manual'>('pathStrategy', 'userPath');
   await applyPathStrategy(strategy, mgr.installDir());

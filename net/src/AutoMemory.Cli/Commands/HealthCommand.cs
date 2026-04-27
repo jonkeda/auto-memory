@@ -29,14 +29,21 @@ public static class HealthCommand
         {
             using var conn = Connect.ConnectReadOnly(Config.DbPath);
             return RunCore(args, conn);
-        }        catch (DatabaseNotFoundException)
+        }
+        catch (DatabaseNotFoundException)
         {
+            // In JSON mode run flat-file health computation instead of stub payload
+            if (args.GetFlag("json"))
+            {
+                return FlatHealthCommand.Run(args);
+            }
             throw; // Let Program.cs handle exit code 4
         }
         catch (DatabaseLockedException)
         {
             throw; // Let Program.cs handle exit code 3
-        }        catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Console.Error.WriteLine($"Failed to run health check: {ex.Message}");
             return 3;

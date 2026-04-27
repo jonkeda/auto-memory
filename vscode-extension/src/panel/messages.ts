@@ -1,7 +1,7 @@
 import { AutoMemoryPanel } from './AutoMemoryPanel';
 import { Strategy } from '../instructions/InstructionsManager';
 
-interface Msg { type: string; payload: any; }
+interface Msg { type: string; payload: unknown; }
 
 export async function handleMessage(panel: AutoMemoryPanel, msg: Msg): Promise<void> {
   try {
@@ -26,16 +26,23 @@ async function refresh(p: AutoMemoryPanel, section: string): Promise<void> {
 
 async function postInstall(p: AutoMemoryPanel): Promise<void> {
   const v = await p.binary().installedVersion();
+  const healthData = p.getLastHealthData();
+  const vsCodeCount = healthData?.session_state_count ?? 0;
+  const chatCount = healthData?.vscode_chat_count ?? 0;
   p.post('installStatus', {
     version: v,
     installDir: p.binary().installDir(),
     pathStrategy: 'userPath',
+    vscode_session_count: vsCodeCount,
+    vscode_chat_count: chatCount,
   });
 }
 
 async function postHealth(p: AutoMemoryPanel): Promise<void> {
   const json = await p.cli().get('health', () => p.runCli(['health', '--json']));
-  p.post('health', JSON.parse(json as string));
+  const data = JSON.parse(json as string);
+  p.setLastHealthData(data);
+  p.post('health', data);
 }
 
 async function postSessions(p: AutoMemoryPanel): Promise<void> {

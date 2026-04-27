@@ -1,0 +1,5 @@
+{"type":"session.start","data":{"sessionId":"a1b2c3d4-0000-0000-0000-000000000001","startTime":"2026-01-15T10:00:00.000Z","selectedModel":"claude-sonnet-4","context":{"cwd":"/home/user/repos/my-project","repository":"owner/my-project","branch":"main"}},"id":"evt-001","timestamp":"2026-01-15T10:00:00.000Z","parentId":null}
+{"type":"user.message","data":{"content":"Please implement the login page.","interactionId":"int-001"},"id":"evt-002","timestamp":"2026-01-15T10:01:00.000Z","parentId":"evt-001"}
+{"type":"tool.execution_start","data":{"toolCallId":"tc-001","toolName":"create_file","arguments":{"path":"src/pages/Login.tsx","content":"..."}},"id":"evt-003","timestamp":"2026-01-15T10:05:00.000Z","parentId":"evt-002"}
+{"type":"tool.execution_complete","data":{"toolCallId":"tc-001","result":"ok"},"id":"evt-004","timestamp":"2026-01-15T10:05:01.000Z","parentId":"evt-003"}
+{"type":"session.shutdown","data":{},"id":"evt-005","timestamp":"2026-01-15T10:30:00.000Z","parentId":null}

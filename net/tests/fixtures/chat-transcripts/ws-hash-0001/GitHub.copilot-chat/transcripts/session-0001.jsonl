@@ -1,0 +1,17 @@
+{"type":"session.start","data":{"sessionId":"session-0001","version":1,"producer":"copilot-agent","copilotVersion":"0.46.0","vscodeVersion":"1.118.0","startTime":"2026-04-25T10:00:00.000Z"},"id":"evt-0001-0001","timestamp":"2026-04-25T10:00:00.000Z","parentId":null}
+{"type":"assistant.turn_start","data":{"turnId":"0"},"id":"evt-0001-0002","timestamp":"2026-04-25T10:00:01.000Z","parentId":"evt-0001-0001"}
+{"type":"user.message","data":{"content":"Read the README file and summarize it","attachments":[]},"id":"evt-0001-0003","timestamp":"2026-04-25T10:00:02.000Z","parentId":"evt-0001-0002"}
+{"type":"assistant.message","data":{"messageId":"msg-0001-0001","content":"I'll read the README file for you.","toolRequests":[{"toolCallId":"tool-0001-0001","name":"read_file","arguments":"{\"filePath\":\"README.md\",\"startLine\":1,\"endLine\":100}","type":"function"}],"reasoningText":"Need to read the file"},"id":"evt-0001-0004","timestamp":"2026-04-25T10:00:03.000Z","parentId":"evt-0001-0003"}
+{"type":"tool.execution_start","data":{"toolCallId":"tool-0001-0001","toolName":"read_file","arguments":{"filePath":"README.md","startLine":1,"endLine":100}},"id":"evt-0001-0005","timestamp":"2026-04-25T10:00:04.000Z","parentId":"evt-0001-0004"}
+{"type":"tool.execution_complete","data":{"toolCallId":"tool-0001-0001","success":true},"id":"evt-0001-0006","timestamp":"2026-04-25T10:00:05.000Z","parentId":"evt-0001-0005"}
+{"type":"assistant.turn_end","data":{"turnId":"0"},"id":"evt-0001-0007","timestamp":"2026-04-25T10:00:06.000Z","parentId":"evt-0001-0006"}
+{"type":"assistant.turn_start","data":{"turnId":"1"},"id":"evt-0001-0008","timestamp":"2026-04-25T10:01:00.000Z","parentId":"evt-0001-0007"}
+{"type":"user.message","data":{"content":"Now check the tests directory","attachments":[]},"id":"evt-0001-0009","timestamp":"2026-04-25T10:01:01.000Z","parentId":"evt-0001-0008"}
+{"type":"assistant.message","data":{"messageId":"msg-0001-0002","content":"Let me list the tests directory.","toolRequests":[{"toolCallId":"tool-0001-0002","name":"list_dir","arguments":"{\"path\":\"tests\"}","type":"function"}],"reasoningText":"Listing tests"},"id":"evt-0001-0010","timestamp":"2026-04-25T10:01:02.000Z","parentId":"evt-0001-0009"}
+{"type":"tool.execution_start","data":{"toolCallId":"tool-0001-0002","toolName":"list_dir","arguments":{"path":"tests"}},"id":"evt-0001-0011","timestamp":"2026-04-25T10:01:03.000Z","parentId":"evt-0001-0010"}
+{"type":"tool.execution_complete","data":{"toolCallId":"tool-0001-0002","success":true},"id":"evt-0001-0012","timestamp":"2026-04-25T10:01:04.000Z","parentId":"evt-0001-0011"}
+{"type":"assistant.turn_end","data":{"turnId":"1"},"id":"evt-0001-0013","timestamp":"2026-04-25T10:01:05.000Z","parentId":"evt-0001-0012"}
+{"type":"assistant.turn_start","data":{"turnId":"2"},"id":"evt-0001-0014","timestamp":"2026-04-25T10:02:00.000Z","parentId":"evt-0001-0013"}
+{"type":"user.message","data":{"content":"Thanks, that helps!","attachments":[]},"id":"evt-0001-0015","timestamp":"2026-04-25T10:02:01.000Z","parentId":"evt-0001-0014"}
+{"type":"assistant.message","data":{"messageId":"msg-0001-0003","content":"You're welcome! Let me know if you need anything else.","toolRequests":[],"reasoningText":""},"id":"evt-0001-0016","timestamp":"2026-04-25T10:02:02.000Z","parentId":"evt-0001-0015"}
+{"type":"assistant.turn_end","data":{"turnId":"2"},"id":"evt-0001-0017","timestamp":"2026-04-25T10:02:03.000Z","parentId":"evt-0001-0016"}

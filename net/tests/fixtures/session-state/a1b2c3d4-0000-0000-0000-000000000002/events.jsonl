@@ -1,0 +1,1 @@
+{"type":"session.start","data":{"sessionId":"a1b2c3d4-0000-0000-0000-000000000002","startTime":"2026-01-10T08:00:00.000Z","selectedModel":"claude-haiku-4.5","context":{"repository":"owner/other-project","branch":"feature/api"}},"id":"evt-101","timestamp":"2026-01-10T08:00:00.000Z","parentId":null}

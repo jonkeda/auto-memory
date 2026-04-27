@@ -8,4 +8,5 @@ input { background: var(--vscode-input-background); color: var(--vscode-input-fo
 .badge-ok { color: var(--vscode-testing-iconPassed); }
 .badge-warn { color: var(--vscode-testing-iconQueued); }
 .score-bar { height: 4px; background: var(--vscode-progressBar-background); border-radius: 2px; }
+.banner.info { background: var(--vscode-editorInfo-background, #e8f4fd); color: var(--vscode-editorInfo-foreground, #014361); border-left: 4px solid var(--vscode-editorInfo-border, #2196f3); padding: 8px 12px; margin-bottom: 12px; border-radius: 4px; font-size: 0.9em; }
 [data-surface="sidebar"] #search-results .full-detail { display: none; }

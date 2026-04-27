@@ -6,6 +6,8 @@ using AutoMemory.Cli.Commands;
 using AutoMemory.Core;
 using AutoMemory.Core.Db;
 using AutoMemory.Core.Util;
+using AutoMemory.Core.VsCodeChat;
+using AutoMemory.Core.VsCodeSessions;
 
 // Configure console for UTF-8 output (emojis, unicode)
 Console.OutputEncoding = Encoding.UTF8;
@@ -142,7 +144,18 @@ static int RunList(string[] commandArgs)
         .AddOption("json", isFlag: true, help: "Output as JSON");
 
     var parsedArgs = parser.Parse(commandArgs);
-    return ListCommand.Run(parsedArgs);
+    try
+    {
+        return ListCommand.Run(parsedArgs);
+    }
+    catch (DatabaseNotFoundException)
+    {
+        var sessionStateStore = SessionStateStore.Default();
+        if (sessionStateStore.IsAvailable())
+            return VsCodeListCommand.Run(parsedArgs);
+        else
+            return VscChatListCommand.Run(parsedArgs);
+    }
 }
 
 static int RunFiles(string[] commandArgs)
@@ -154,7 +167,14 @@ static int RunFiles(string[] commandArgs)
         .AddOption("json", isFlag: true, help: "Output as JSON");
 
     var parsedArgs = parser.Parse(commandArgs);
-    return FilesCommand.Run(parsedArgs);
+    try
+    {
+        return FilesCommand.Run(parsedArgs);
+    }
+    catch (DatabaseNotFoundException)
+    {
+        return VsCodeFilesCommand.Run(parsedArgs);
+    }
 }
 
 static int RunCheckpoints(string[] commandArgs)
@@ -166,7 +186,14 @@ static int RunCheckpoints(string[] commandArgs)
         .AddOption("json", isFlag: true, help: "Output as JSON");
 
     var parsedArgs = parser.Parse(commandArgs);
-    return CheckpointsCommand.Run(parsedArgs);
+    try
+    {
+        return CheckpointsCommand.Run(parsedArgs);
+    }
+    catch (DatabaseNotFoundException)
+    {
+        return VsCodeCheckpointsCommand.Run(parsedArgs);
+    }
 }
 
 static int RunSearch(string[] commandArgs)
@@ -179,7 +206,18 @@ static int RunSearch(string[] commandArgs)
         .AddOption("json", isFlag: true, help: "Output as JSON");
 
     var parsedArgs = parser.Parse(commandArgs);
-    return SearchCommand.Run(parsedArgs);
+    try
+    {
+        return SearchCommand.Run(parsedArgs);
+    }
+    catch (DatabaseNotFoundException)
+    {
+        var sessionStateStore = SessionStateStore.Default();
+        if (sessionStateStore.IsAvailable())
+            return VsCodeSearchCommand.Run(parsedArgs);
+        else
+            return VscChatSearchCommand.Run(parsedArgs);
+    }
 }
 
 static int RunShow(string[] commandArgs)
@@ -191,7 +229,18 @@ static int RunShow(string[] commandArgs)
         .AddOption("json", isFlag: true, help: "Output as JSON");
 
     var parsedArgs = parser.Parse(commandArgs);
-    return ShowCommand.Run(parsedArgs);
+    try
+    {
+        return ShowCommand.Run(parsedArgs);
+    }
+    catch (DatabaseNotFoundException)
+    {
+        var sessionStateStore = SessionStateStore.Default();
+        if (sessionStateStore.IsAvailable())
+            return VsCodeShowCommand.Run(parsedArgs);
+        else
+            return VscChatShowCommand.Run(parsedArgs);
+    }
 }
 
 static int RunSchemaCheck(string[] commandArgs)

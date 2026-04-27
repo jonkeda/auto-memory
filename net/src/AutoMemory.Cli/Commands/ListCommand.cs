@@ -38,6 +38,9 @@ public static class ListCommand
     /// <returns>Exit code: 0=success, 2=schema drift, 3/4=DB errors.</returns>
     public static int Run(ParsedArgs args)
     {
+        // Note: do NOT catch DatabaseNotFoundException here.
+        // Program.cs catches it and falls through to VsCodeListCommand
+        // which reads from ~/.copilot/session-state/ instead.
         using var conn = Connect.ConnectReadOnly(Config.DbPath);
         return RunCore(args, conn);
     }

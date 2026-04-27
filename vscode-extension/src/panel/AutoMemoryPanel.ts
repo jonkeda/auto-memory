@@ -8,9 +8,17 @@ import { handleMessage } from './messages';
 
 export type Surface = 'sidebar' | 'tab';
 
+interface HealthData {
+  session_state_count?: number;
+  vscode_chat_count?: number;
+  storage_format?: string;
+  [key: string]: unknown;
+}
+
 export class AutoMemoryPanel {
   static current: AutoMemoryPanel | null = null;
   private cache = new TtlCache(60_000);
+  private lastHealthData: HealthData | null = null;
 
   constructor(
     private readonly webview: vscode.Webview,
@@ -40,6 +48,9 @@ export class AutoMemoryPanel {
   binary(): BinaryManager { return this.binMgr; }
   instructions(): InstructionsManager { return this.insMgr; }
   runCli(args: string[]): Promise<string> { return this.runWithBin(args); }
+
+  setLastHealthData(data: HealthData): void { this.lastHealthData = data; }
+  getLastHealthData(): HealthData | null { return this.lastHealthData; }
 
   private async runWithBin(args: string[]): Promise<string> {
     const bin = await this.binMgr.resolve();
